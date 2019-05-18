@@ -1,10 +1,23 @@
+require "PolyTreeNode.rb"
 class KnightPathFinder
   def initialize(starting_pos)
+    @starting_pos = starting_pos
     @considered_positions = [starting_pos]
     build_move_tree(starting_pos)
   end
   
-  def build_move_tree
+  def build_move_tree(pos)
+
+   pos_node = PolyTreeNode.new(pos)
+   q = [pos_node]
+    until q.empty?
+      node = q.pop
+      next_positions = new_move_positions(node.value)
+      q = node.children.reverse + q
+      if node.value == target_value
+        return node
+      end
+    end
   end
   
   def self.valid_moves(pos)
@@ -30,8 +43,12 @@ class KnightPathFinder
   end
 
   def new_move_positions(pos)
-    KnightPathFinder.valid_moves.reject{|ele| @considered_positions.include?(ele)}
+    memo = KnightPathFinder.valid_moves.reject{|ele| @considered_positions.include?(ele)}
+    @considered_positions += memo
+    memo
   end
+
+
 
   #instance = KnightPathFinder.new([4,4])
  print  KnightPathFinder.valid_moves([1,4])
